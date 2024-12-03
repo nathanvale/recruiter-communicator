@@ -28,7 +28,8 @@ const authenticate = async (): Promise<Auth.OAuth2Client> => {
   console.log("Authorize this app by visiting this URL:", authUrl);
 
   // Replace `<PASTE_AUTH_CODE>` with a real code from the authorization URL
-  const authCode = "<PASTE_AUTH_CODE>";
+  const authCode =
+    "4/0AeanS0bs0dlR_Nr6vx50I-vmQvQSso8mtowBL0AmPF9T-Ze0aHwWphuZairdzFrISRcFTQ";
   const { tokens } = await oAuth2Client.getToken(authCode);
   fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
   oAuth2Client.setCredentials(tokens);
