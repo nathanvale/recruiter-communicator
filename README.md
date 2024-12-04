@@ -43,20 +43,17 @@ npm install
    - Go to **APIs & Services > Credentials**.
    - Create a new **OAuth 2.0 Client ID** for a desktop app.
    - Download the `credentials.json` file and save it in the project root.
+5. Set up a scope gmail.modify to read and write emails.
+   - Go to **APIs & Services > OAuth consent screen**.
+   - Add the scope `https://www.googleapis.com/auth/gmail.modify` to the scopes.
 
-### 4. Create a `.env` File
-Create a `.env` file in the root of the project to store sensitive credentials:
-```env
-GMAIL_USER=your-email@your-domain.com
-GMAIL_PASS=your-app-password
-```
 
-### 5. Authenticate with Gmail
+### 4. Authenticate with Gmail
 Run the authentication script to generate `token.json`:
 ```bash
 npx ts-node src/auth.ts
 ```
-Follow the printed instructions to authenticate the app. After successful authentication, a `token.json` file will be created.
+Follow the printed instructions to authenticate the app. You visit the auth url and copy and paste the auth code in the redirect URl into auth.ts and then your your script again. After successful authentication, a `token.json` file will be created.
 
 ---
 
@@ -81,74 +78,9 @@ This script will:
 1. Read email addresses from `emails.json`.
 2. Send emails with a predefined subject, body, and attachment (e.g., `CV.pdf`).
 
----
 
-## Sending Emails with Google Workspace
 
-To send emails using a Google Workspace account with **Nodemailer**, follow these steps:
 
-### **1. Enable SMTP for Google Workspace**
-1. Log in to the [Google Admin Console](https://admin.google.com/) as an admin.
-2. Go to **Apps > Google Workspace > Gmail > User Settings**.
-3. Enable the **SMTP relay service** if it’s disabled.
-
-### **2. Create an App Password**
-If your account uses 2-Step Verification (recommended for Google Workspace accounts):
-1. Log in to your [Google Account](https://myaccount.google.com/) associated with the Google Workspace email.
-2. Go to **Security > Signing in to Google > App Passwords**.
-3. Create an App Password:
-   - Choose **Mail** as the app.
-   - Select your device or "Other (Custom)" (e.g., `Nodemailer`).
-   - Copy the generated password.
-
-### **3. Update the `.env` File**
-Update your `.env` file with your Google Workspace email and the generated App Password:
-```env
-GMAIL_USER=your-email@your-domain.com
-GMAIL_PASS=your-app-password
-```
-
----
-
-## Example: Sending Emails with Nodemailer and Google Workspace
-
-The `sendEmails.ts` script is configured to work with Google Workspace. It uses Gmail's SMTP service to send emails.
-
-```typescript
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER, // Your Google Workspace email address
-    pass: process.env.GMAIL_PASS, // Your App Password
-  },
-});
-
-const sendEmails = async () => {
-  try {
-    const info = await transporter.sendMail({
-      from: `"Your Name" <${process.env.GMAIL_USER}>`,
-      to: "recipient@example.com", // Replace with recipient email
-      subject: "Test Email from Google Workspace",
-      text: "This is a test email sent from a Google Workspace account using Nodemailer.",
-    });
-
-    console.log("Email sent:", info.messageId);
-  } catch (err) {
-    console.error("Error sending email:", err);
-  }
-};
-
-sendEmails();
-```
-
----
-
-## File Structure
 ```
 .
 ├── src/
@@ -167,7 +99,7 @@ sendEmails();
 
 ## Security Notes
 - **Do not share** `credentials.json` or `token.json`.
-- Add `.env`, `credentials.json`, and `token.json` to `.gitignore` to prevent accidental commits.
+- Add `credentials.json`, and `token.json` to `.gitignore` to prevent accidental commits.
 - Use **App Passwords** instead of your primary Gmail password for added security.
 
 ---
@@ -178,11 +110,7 @@ sendEmails();
    - Ensure the Gmail API is enabled in the Google Cloud Console.
    - Verify the redirect URI in `credentials.json` matches `http://localhost`.
 
-2. **SMTP Errors**:
-   - Ensure the `.env` file is correctly configured with your Gmail credentials.
-   - Use an **App Password** if 2-Step Verification is enabled.
-
-3. **Quota Limits**:
+2. **Quota Limits**:
    - The Gmail API has limits on the number of requests. Monitor your usage in the Google Cloud Console.
 
 ---

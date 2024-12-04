@@ -36,7 +36,10 @@ const extractEmails = async (): Promise<void> => {
     headers?.forEach((header) => {
       if (header.name === "From") {
         const match = header.value?.match(/<(.+?)>/);
-        if (match) emailAddresses.add(match[1]);
+        if (match) {
+          emailAddresses.add(match[1]);
+          console.log("Found email:", match[1]);
+        }
       }
     });
   }
