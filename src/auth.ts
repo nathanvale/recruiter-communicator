@@ -12,7 +12,6 @@ const authenticate = async (): Promise<Auth.OAuth2Client> => {
     client_secret,
     redirect_uris[0]
   );
-  console.log("hello");
   if (fs.existsSync(TOKEN_PATH)) {
     const token = fs.readFileSync(TOKEN_PATH, "utf8");
     oAuth2Client.setCredentials(JSON.parse(token));

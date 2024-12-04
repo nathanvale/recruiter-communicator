@@ -2,7 +2,12 @@ import fs from "fs";
 import { google } from "googleapis";
 import authenticate from "./auth";
 
-const CV = "nathanvale-FE-2024v6.docx";
+// Located at the root of the project
+const CV_DOCX_FILE_NAME = "nathanvale-FE-2024v6.docx";
+const EMAIL_SUBJECT =
+  "Open to New Front-End/Full-Stack Contract Roles in the New Year";
+// Located at the root of the project
+const EMAIL_CONTENT_TEXT_FILE = "cover_letter.txt";
 
 const sendEmails = async (): Promise<void> => {
   const auth = await authenticate();
@@ -13,25 +18,27 @@ const sendEmails = async (): Promise<void> => {
   );
   console.log(`Loaded ${emailData.length} email addresses`);
 
+  const coverLetterContent = fs.readFileSync(EMAIL_CONTENT_TEXT_FILE, "utf8");
+
   const emailBodyTemplate = (to: string): string => {
     return [
-      `From: "Nathan Vale" <hi@nathanvale.com>`,
+      `From: "Nathan Vale" <hire@nathanvale.com>`,
       `To: ${to}`,
-      `Subject: My Updated CV`,
+      `Subject: ${EMAIL_SUBJECT}`,
       `Content-Type: multipart/mixed; boundary="Boundary"`,
       ``,
       `--Boundary`,
       `Content-Type: text/plain; charset="UTF-8"`,
       `Content-Transfer-Encoding: 7bit`,
       ``,
-      `Hello, please find my updated CV attached.`,
+      `${coverLetterContent}`,
       ``,
       `--Boundary`,
-      `Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document; name="${CV}"`,
-      `Content-Disposition: attachment; filename="${CV}"`,
+      `Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document; name="${CV_DOCX_FILE_NAME}"`,
+      `Content-Disposition: attachment; filename="${CV_DOCX_FILE_NAME}"`,
       `Content-Transfer-Encoding: base64`,
       ``,
-      fs.readFileSync(`./${CV}`, "base64"),
+      fs.readFileSync(`./${CV_DOCX_FILE_NAME}`, "base64"),
       ``,
       `--Boundary--`,
     ].join("\r\n");
